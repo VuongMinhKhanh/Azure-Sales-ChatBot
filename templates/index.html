@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Chatwoot Reset Button</title>
+    <script>
+      (function(d, t) {
+        var BASE_URL = "https://app.chatwoot.com"; // Replace with your Chatwoot instance URL
+        var g = d.createElement(t), s = d.getElementsByTagName(t)[0];
+        g.src = BASE_URL + "/packs/js/sdk.js";
+        g.defer = true;
+        g.async = true;
+        s.parentNode.insertBefore(g, s);
+
+        g.onload = function() {
+          window.chatwootSDK.run({
+            websiteToken: '76MJLEtK1vptjRaqf8Go2V5c', // Replace with your widget token
+            baseUrl: BASE_URL
+          });
+
+          // Add Reset Button Logic
+          function addResetButton() {
+            const observer = new MutationObserver(() => {
+              const header = document.querySelector('header.flex.justify-between.w-full.p-5.bg-white'); // Select the header
+              if (header && !header.querySelector('.reset-chat-button')) {
+                // Create the Reset Button
+                const resetButton = document.createElement('button');
+                resetButton.innerText = 'Reset Chat';
+                resetButton.className = 'reset-chat-button px-3 py-2 bg-red-500 text-white rounded';
+                resetButton.style.marginLeft = '10px';
+
+                // Add click event to reset the chat
+                resetButton.addEventListener('click', () => {
+                  window.chatwootSDK.reset(); // Destroy the current widget
+                  console.log("Chat reset!");
+                });
+
+                // Append the button to the header
+                const buttonContainer = header.querySelector('.flex.items-center'); // Add inside the left section
+                buttonContainer.appendChild(resetButton);
+              }
+            });
+
+            // Observe changes in the Chatwoot widget
+            const chatContainer = document.querySelector('#app'); // Root container
+            if (chatContainer) {
+              observer.observe(chatContainer, { childList: true, subtree: true });
+            }
+          }
+
+          // Execute the logic once the DOM is ready
+          document.addEventListener('DOMContentLoaded', addResetButton);
+        };
+      })(document, "script");
+    </script>
+    <script>
+      // Wait for the DOM to load and initialize
+      document.addEventListener("DOMContentLoaded", function () {
+          (function waitForWidgetToLoad() {
+            // Use MutationObserver to detect when the widget is added to the DOM
+            const observer = new MutationObserver(() => {
+              const headerTitle = document.querySelector('header span');
+              if (headerTitle && headerTitle.textContent.trim() === "769audio") {
+                // Modify the text
+                headerTitle.textContent = "769audio,";
+                console.log("Header text updated to:", headerTitle.textContent);
+
+                // Disconnect the observer after modification
+                observer.disconnect();
+              }
+            });
+
+            // Observe changes in the body for the Chatwoot widget
+            if (document.body) {
+              observer.observe(document.body, { childList: true, subtree: true });
+            } else {
+              console.error("Document body not found!");
+            }
+          })();
+        });
+
+    </script>
+
+</head>
+<body>
+    <p>Welcome to Chatwoot!</p>
+</body>
+</html>
