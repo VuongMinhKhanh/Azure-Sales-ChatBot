@@ -15,6 +15,7 @@ load_dotenv()
 
 # Flask App Initialization
 application = Flask(__name__)
+app = application
 
 # Chatwoot API Configuration
 BASE_URL = "https://app.chatwoot.com"  # Replace with your instance URL
